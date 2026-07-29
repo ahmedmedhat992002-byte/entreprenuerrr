@@ -150,6 +150,50 @@
   }
 
   footer { text-align:center; color:#e5e7eb; font-size:12px; opacity:.7; margin-top: 10px; }
+
+  /* Answer feedback popup */
+  .option { position: relative; }
+  .feedback-pop {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%) scale(0.6);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 14px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    animation: feedbackPop 1.1s ease forwards;
+    z-index: 5;
+  }
+  .feedback-pop.good { background: #16a34a; color: #fff; box-shadow: 0 6px 16px rgba(22,163,74,0.45); }
+  .feedback-pop.bad { background: #dc2626; color: #fff; box-shadow: 0 6px 16px rgba(220,38,38,0.45); }
+
+  @keyframes feedbackPop {
+    0%   { opacity: 0; transform: translateY(-50%) scale(0.4) rotate(-6deg); }
+    15%  { opacity: 1; transform: translateY(-50%) scale(1.25) rotate(2deg); }
+    30%  { transform: translateY(-50%) scale(1) rotate(0deg); }
+    75%  { opacity: 1; transform: translateY(-50%) scale(1) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(-70%) scale(0.9) rotate(0deg); }
+  }
+
+  @keyframes shakeWrong {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+  .option.wrong { animation: shakeWrong .4s ease; }
+
+  @keyframes popCorrect {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+  .option.correct { animation: popCorrect .35s ease; }
 </style>
 </head>
 <body>
@@ -440,12 +484,14 @@ function renderPage(){
       const btn = document.createElement('div');
       btn.className = 'option';
       btn.textContent = opt;
+      btn.dataset.q = i;
+      btn.dataset.opt = idx;
       if(existingAnswer){
         btn.classList.add('locked');
         if(idx === item.correct) btn.classList.add('correct');
         if(idx === existingAnswer.chosen && idx !== item.correct) btn.classList.add('wrong');
       }
-      btn.addEventListener('click', ()=> selectOption(i, idx));
+      btn.addEventListener('click', (e)=> selectOption(i, idx, e.currentTarget));
       optsWrap.appendChild(btn);
     });
     block.appendChild(optsWrap);
@@ -467,11 +513,28 @@ function renderPage(){
   nextPageBtn.textContent = (currentPage === totalPages() - 1) ? 'Show Results 🏁' : 'Next 10 ➡';
 }
 
-function selectOption(qIdx, optIdx){
+const GOOD_MESSAGES = ['🔥 جامد!', '👏 برافو!', '🎯 تمام!', '💪 كده يا وحش!', '⭐ ممتاز!', '✅ عاش يا بطل!', '🚀 جبار!'];
+const BAD_MESSAGE = '❌ فاشل';
+
+function showFeedback(btnEl, isCorrect){
+  if(!btnEl) return;
+  const pop = document.createElement('div');
+  pop.className = 'feedback-pop ' + (isCorrect ? 'good' : 'bad');
+  pop.textContent = isCorrect
+    ? GOOD_MESSAGES[Math.floor(Math.random() * GOOD_MESSAGES.length)]
+    : BAD_MESSAGE;
+  btnEl.appendChild(pop);
+  setTimeout(()=> pop.remove(), 1200);
+}
+
+function selectOption(qIdx, optIdx, btnEl){
   if(answers[qIdx]) return;
   const item = filtered[qIdx];
-  answers[qIdx] = { chosen: optIdx, isCorrect: optIdx === item.correct };
+  const isCorrect = optIdx === item.correct;
+  answers[qIdx] = { chosen: optIdx, isCorrect };
   renderPage();
+  const newBtn = questionsContainer.querySelector(`.option[data-q="${qIdx}"][data-opt="${optIdx}"]`);
+  showFeedback(newBtn, isCorrect);
 }
 
 function updateProgress(){
