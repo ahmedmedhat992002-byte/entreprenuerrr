@@ -32,6 +32,7 @@
 
   /* Filters */
   .filters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 16px; }
+  .filter-label { text-align:center; font-size: 12.5px; font-weight:700; color:#7c3aed; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; }
   .chip {
     padding: 9px 16px;
     border-radius: 999px;
@@ -205,7 +206,10 @@
 
   <!-- SETUP SCREEN -->
   <div class="card" id="setupScreen">
+    <div class="filter-label">📚 Filter by chapter</div>
     <div class="filters" id="filters"></div>
+    <div class="filter-label">✍️ Filter by question type</div>
+    <div class="filters" id="typeFilters"></div>
     <div class="stats-row" id="statsRow"></div>
     <button id="startBtn">Start Quiz 🎯</button>
   </div>
@@ -381,16 +385,57 @@ const QUESTIONS = [
 {cat:"c3p3", q:"A technical change, as defined in the lecture, refers to:", opts:["A change purely in marketing strategy","A change in business operation in terms of the amount of output relative to the amount of input","A change in company logo only","A change in employee dress code"], correct:1, trick:"التغيير التقني = علاقة كمية 'المخرجات' بكمية 'المدخلات' في العملية الإنتاجية."},
 {cat:"c3p3", q:"The \"Expert Strategy\" for dealing with resistance to change is mainly applied to:", opts:["Emotional conflicts between employees","More technical problems, led by a specialist project team or senior manager","Symbolic inclusion of resistance leaders","Financial negotiations only"], correct:1, trick:"Expert Strategy = للمشاكل 'التقنية' زي نظام معلومات جديد، وبيقودها فريق متخصص."},
 {cat:"c3p3", q:"The \"Negotiation and Agreement\" strategy for managing resistance to change involves:", opts:["Accepting concessions and adjustments to win acceptance","Forcing change through threats of job loss","Providing special training only","Explaining the change to all employees at once"], correct:0, trick:"التفاوض والاتفاق = تقديم تنازلات وتعديلات عشان تكسب موافقة الطرف التاني."},
-{cat:"c3p3", q:"The \"Coercion\" strategy for dealing with resistance to change involves:", opts:["Full negotiation and mutual agreement","Explicit or implicit threats of job loss or non-promotion","Bringing resistors into a planning group","Providing counselling and time off"], correct:1, trick:"Coercion = إكراه، يعني تهديد صريح أو ضمني بفقدان الوظيفة أو الترقية."}
+{cat:"c3p3", q:"The \"Coercion\" strategy for dealing with resistance to change involves:", opts:["Full negotiation and mutual agreement","Explicit or implicit threats of job loss or non-promotion","Bringing resistors into a planning group","Providing counselling and time off"], correct:1, trick:"Coercion = إكراه، يعني تهديد صريح أو ضمني بفقدان الوظيفة أو الترقية."},
+
+// ===== True / False Questions (added) =====
+{cat:"c1p1", type:"tf", q:"True or False: Self-employment means working for an employer under a fixed salary.", opts:["True","False"], correct:1, trick:"ده تعريف Wage Labor مش Self-employment — self-employment يعني شغال لنفسك."},
+{cat:"c1p1", type:"tf", q:"True or False: The UNDP (2010) defines entrepreneurship as using private initiative to transform a business concept into a new venture.", opts:["True","False"], correct:0, trick:"صح، ده نص تعريف UNDP بالظبط زي ما جه في المحاضرة."},
+{cat:"c1p1", type:"tf", q:"True or False: According to the lecture, a country's wealth is guaranteed simply by possessing natural resources.", opts:["True","False"], correct:1, trick:"غلط، الضمان هو 'استغلال' الموارد صح مش مجرد امتلاكها."},
+{cat:"c1p1", type:"tf", q:"True or False: Nigeria is cited as an example of a country with huge resource wealth but underutilization.", opts:["True","False"], correct:0, trick:"صح، نيجيريا مثال أساسي في المحاضرة لموارد ضخمة ما بتتستغلش صح."},
+
+{cat:"c2p1", type:"tf", q:"True or False: David McClelland's Need-for-Achievement theory was proposed in 1961.", opts:["True","False"], correct:0, trick:"صح، 'حاجة سنة 61' زي ما اتفقنا نحفظها."},
+{cat:"c2p1", type:"tf", q:"True or False: Israel Kirzner's core concept in entrepreneurship theory is 'alertness' to market opportunities.", opts:["True","False"], correct:0, trick:"صح، كيرزنر = Alert-زنر."},
+{cat:"c2p1", type:"tf", q:"True or False: According to Shackle, business opportunities exist objectively, independent of the person who discovers them.", opts:["True","False"], correct:1, trick:"غلط، عند شاكل الفرصة نابعة من 'خيال' مكتشفها مش موجودة موضوعيًا بذاتها."},
+{cat:"c2p1", type:"tf", q:"True or False: Max Weber is associated with the Psychological Perspective of entrepreneurship.", opts:["True","False"], correct:1, trick:"غلط، ويبر عالم اجتماع وينتمي للمنظور الاجتماعي مش النفسي."},
+
+{cat:"c2p2", type:"tf", q:"True or False: According to Weber, Protestant ethics favored and promoted the 'spirit of capitalism'.", opts:["True","False"], correct:0, trick:"صح، دي فكرة ويبر الأساسية عن الأخلاق البروتستانتية."},
+{cat:"c2p2", type:"tf", q:"True or False: Thomas Cochran viewed entrepreneurs as extraordinary or supernatural individuals.", opts:["True","False"], correct:1, trick:"غلط، كوكران شافهم 'قدوة' (Role Models) شكّلها المجتمع مش خوارق."},
+{cat:"c2p2", type:"tf", q:"True or False: Frank Young's theory emphasizes individual psychological traits over group-level patterns.", opts:["True","False"], correct:1, trick:"غلط، يونج ركّز على الجروب والمجموعات مش الفرد وسماته النفسية."},
+{cat:"c2p2", type:"tf", q:"True or False: Max Weber was a German sociologist and economist.", opts:["True","False"], correct:0, trick:"صح، زي ما جه بالظبط في المحاضرة."},
+
+{cat:"c2p3", type:"tf", q:"True or False: Schumpeter proposed his innovation theory of entrepreneurship in 1949.", opts:["True","False"], correct:0, trick:"صح، شومبيتر 1949 زي ما اتفقنا نحفظها."},
+{cat:"c2p3", type:"tf", q:"True or False: According to Knight, entrepreneurial profit is the reward for bearing insurable risks.", opts:["True","False"], correct:1, trick:"غلط، الربح عند نايت مقابل تحمّل مخاطر 'غير قابلة للتأمين' (Non-insurable)."},
+{cat:"c2p3", type:"tf", q:"True or False: Leibenstein's theory of X-efficiency was introduced in 1966.", opts:["True","False"], correct:0, trick:"صح، ليبنشتاين 1966."},
+{cat:"c2p3", type:"tf", q:"True or False: Casson's book 'The Entrepreneur — An Economic Theory' was published in 1982.", opts:["True","False"], correct:0, trick:"صح، كاسون 1982 بعد ليبنشتاين بـ16 سنة."},
+
+{cat:"c2p4", type:"tf", q:"True or False: Hoselitz believed financial skills have primary importance in entrepreneurship.", opts:["True","False"], correct:1, trick:"غلط، عنده المهارات المالية ثانوية والمهارات الإدارية والقيادية هي الأساس."},
+{cat:"c2p4", type:"tf", q:"True or False: Harbison described the entrepreneur as an 'organisation builder' who harnesses the ideas of different innovators.", opts:["True","False"], correct:0, trick:"صح، دي فكرة هاربيسون الأساسية."},
+{cat:"c2p4", type:"tf", q:"True or False: Chapter 2 covers a total of five perspectives on entrepreneurship theories.", opts:["True","False"], correct:1, trick:"غلط، أربعة مناظير بس: نفسي - اجتماعي - اقتصادي - إداري."},
+
+{cat:"c3p1", type:"tf", q:"True or False: According to Drucker (1985), there are seven sources of innovation.", opts:["True","False"], correct:0, trick:"صح، دركر 7 مصادر زي أيام الأسبوع."},
+{cat:"c3p1", type:"tf", q:"True or False: Radical Innovation involves only small routine modifications to existing technology.", opts:["True","False"], correct:1, trick:"غلط، ده تعريف Incremental Innovation، أما Radical فثورة تكنولوجية كاملة."},
+{cat:"c3p1", type:"tf", q:"True or False: Disruptive Innovation always requires a technological breakthrough.", opts:["True","False"], correct:1, trick:"غلط، محتاجة 'موديل عمل جديد' مش لازم اختراق تكنولوجي."},
+{cat:"c3p1", type:"tf", q:"True or False: Desouza and Jha (2007) identified five essential phases of successful innovation.", opts:["True","False"], correct:0, trick:"صح، 5 مراحل: توليد، دعوة وفرز، تجريب، تسويق، انتشار وتنفيذ."},
+
+{cat:"c3p2", type:"tf", q:"True or False: Change management is described in the lecture as a random reaction to unexpected events.", opts:["True","False"], correct:1, trick:"غلط، هي منهج 'منظم' (Systematic) مش رد فعل عشوائي."},
+{cat:"c3p2", type:"tf", q:"True or False: Changes in raw materials, finance, processes, and employees are classified as internal factors.", opts:["True","False"], correct:0, trick:"صح، دول كلهم عوامل داخلية (Internal) جوه المنشأة."},
+{cat:"c3p2", type:"tf", q:"True or False: Habit, as a source of resistance to change, is described as easy to break once formed.", opts:["True","False"], correct:1, trick:"غلط، العادة آلية تأقلم 'صعبة الكسر' لما تترسخ."},
+{cat:"c3p2", type:"tf", q:"True or False: Overt and immediate resistance to change is generally easier to recognize than implicit and deferred resistance.", opts:["True","False"], correct:0, trick:"صح، المقاومة العلنية الفورية أسهل في الملاحظة من الضمنية المؤجلة."},
+
+{cat:"c3p3", type:"tf", q:"True or False: Mechanistic organizational structures are described as more adaptable to change than organic structures.", opts:["True","False"], correct:1, trick:"غلط، العكس صحيح — الهيكل العضوي (Organic) هو الأكتر تكيفًا مع التغيير."},
+{cat:"c3p3", type:"tf", q:"True or False: The Directive Strategy for managing change relies mainly on full negotiation with all employees.", opts:["True","False"], correct:1, trick:"غلط، الاستراتيجية التوجيهية بتعتمد على سلطة الريادي بأقل مشاركة من الموظفين."},
+{cat:"c3p3", type:"tf", q:"True or False: The Coercion strategy for dealing with resistance to change involves explicit or implicit threats of job loss.", opts:["True","False"], correct:0, trick:"صح، ده جوهر استراتيجية الإكراه (Coercion)."}
 ];
 
 let filtered = [];
 let answers = {}; // { questionIndex: { chosen: idx, isCorrect: bool } }
 let activeCat = "all";
+let activeType = "all"; // "all" | "mcq" | "tf"
 const PAGE_SIZE = 10;
 let currentPage = 0;
 
 const filtersEl = document.getElementById('filters');
+const typeFiltersEl = document.getElementById('typeFilters');
 const statsRow = document.getElementById('statsRow');
 const startBtn = document.getElementById('startBtn');
 const setupScreen = document.getElementById('setupScreen');
@@ -402,6 +447,14 @@ const questionsContainer = document.getElementById('questionsContainer');
 const prevPageBtn = document.getElementById('prevPageBtn');
 const nextPageBtn = document.getElementById('nextPageBtn');
 const pageIndicator = document.getElementById('pageIndicator');
+
+function getType(q){ return q.type === 'tf' ? 'tf' : 'mcq'; }
+
+function matchesActiveFilters(q){
+  const catOk = activeCat === 'all' || q.cat === activeCat;
+  const typeOk = activeType === 'all' || getType(q) === activeType;
+  return catOk && typeOk;
+}
 
 function buildFilters(){
   const allChip = document.createElement('div');
@@ -427,8 +480,31 @@ function buildFilters(){
   });
 }
 
+function buildTypeFilters(){
+  const types = [
+    { key: 'all', label: '🗂️ All Types', count: QUESTIONS.length },
+    { key: 'mcq', label: '🔘 Multiple Choice', count: QUESTIONS.filter(q=>getType(q)==='mcq').length },
+    { key: 'tf', label: '✅❌ True / False', count: QUESTIONS.filter(q=>getType(q)==='tf').length }
+  ];
+  types.forEach(t=>{
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (t.key==='all' ? ' active' : '');
+    chip.textContent = `${t.label} (${t.count})`;
+    chip.dataset.type = t.key;
+    typeFiltersEl.appendChild(chip);
+  });
+  typeFiltersEl.querySelectorAll('.chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      typeFiltersEl.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      activeType = chip.dataset.type;
+      updateStats();
+    });
+  });
+}
+
 function updateStats(){
-  const count = activeCat==='all' ? QUESTIONS.length : QUESTIONS.filter(q=>q.cat===activeCat).length;
+  const count = QUESTIONS.filter(matchesActiveFilters).length;
   statsRow.innerHTML = `Available questions: <b>${count}</b>`;
 }
 
@@ -442,7 +518,7 @@ function shuffle(arr){
 }
 
 startBtn.addEventListener('click', ()=>{
-  filtered = shuffle(activeCat==='all' ? QUESTIONS : QUESTIONS.filter(q=>q.cat===activeCat));
+  filtered = shuffle(QUESTIONS.filter(matchesActiveFilters));
   if(filtered.length===0) return;
   answers = {};
   currentPage = 0;
@@ -605,6 +681,7 @@ document.getElementById('restartBtn').addEventListener('click', ()=>{
 });
 
 buildFilters();
+buildTypeFilters();
 updateStats();
 </script>
 </body>
